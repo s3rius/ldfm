@@ -1,14 +1,13 @@
-use std::collections::HashMap;
+use std::{collections::HashMap, path::PathBuf};
 
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct LdfmConfig {
-    local_path: String,
+    pub local_path: PathBuf,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Default, Clone, Serialize, Deserialize)]
 pub struct RepoConfig {
-    files: HashMap<String, String>,
-    excludes: Vec<String>,
+    pub files: HashMap<String, String>,
 }

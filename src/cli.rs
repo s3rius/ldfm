@@ -1,3 +1,5 @@
+use std::path::PathBuf;
+
 #[derive(Debug, Clone, clap::Parser)]
 pub struct Cli {
     #[arg(name = "log-level", short, long, default_value = "info")]
@@ -8,16 +10,24 @@ pub struct Cli {
 
 #[derive(Debug, Clone, clap::Subcommand)]
 pub enum Command {
+    /// Initialize the local directory as a dotfiles repository.
     Init {
         /// Path to the local directory to initialize
         #[arg(long, short, default_value = "~/.config/dotfiles")]
-        local_path: String,
+        local_path: PathBuf,
+        /// Path to the remote git repository to use for dotfiles.
+        git_repo: Option<String>,
     },
+    // Commit current state of dotfiles.
     Commit {
+        /// Whether to push the changes to the remote repository
         #[arg(long, short, default_value = "false")]
         push: bool,
     },
-    Add {},
-    Remove {},
+    // Add a file or a directory to the tracking list.
+    Track {},
+    // Remove a file or a directory from the tracking list.
+    Untrack {},
+    // List all tracked files and directories.
     List {},
 }
