@@ -1,4 +1,4 @@
-use clap::Parser;
+use clap::{CommandFactory, Parser};
 
 use crate::{cli::Cli, configs::LdfmConfig};
 
@@ -66,6 +66,10 @@ fn main() -> anyhow::Result<()> {
                 anyhow::bail!(initialization_error_message)
             };
             cmds::apply::run(config, no_pull)?;
+        }
+        cli::Command::Completions { shell } => {
+            let mut cmd = Cli::command();
+            clap_complete::generate(shell, &mut cmd, "ldfm", &mut std::io::stdout());
         }
     }
 
