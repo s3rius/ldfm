@@ -1,8 +1,10 @@
 use std::path::PathBuf;
 
+use fs_extra::dir::CopyOptions;
+
 use crate::{
     configs::LdfmConfig,
-    utils::{git_commit, git_push, run_command},
+    utils::{git_commit, git_push},
 };
 
 pub fn add(config: LdfmConfig, path: PathBuf) -> anyhow::Result<()> {
@@ -91,21 +93,11 @@ pub fn sync(config: LdfmConfig, push: bool) -> anyhow::Result<()> {
             actual_path.display(),
             target_path.display()
         );
-        let status = run_command(
-            "cp",
-            [
-                "-r",
-                actual_path.display().to_string().as_str(),
-                target_path.display().to_string().as_str(),
-            ],
+        fs_extra::copy_items(
+            &[actual_path],
+            target_path.parent().unwrap(),
+            &CopyOptions::new().overwrite(true).copy_inside(true),
         )?;
-        if !status.success() {
-            tracing::error!(
-                "Failed to copy file from {} to {}",
-                actual_path.display(),
-                target_path.display()
-            );
-        }
     }
     let repo_path = config.local_path.display().to_string();
     git_commit(&repo_path, "Dotfiles sync.")?;

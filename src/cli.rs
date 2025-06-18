@@ -18,22 +18,24 @@ pub enum Command {
         /// Path to the remote git repository to use for dotfiles.
         git_repo: Option<String>,
     },
-    // Commit current state of dotfiles.
+    /// Apply the current state of dotfiles to the local system.
+    Apply,
+    /// Commit current state of dotfiles.
     Commit {
         /// Whether to push the changes to the remote repository
         #[arg(long, short, default_value = "false")]
         push: bool,
     },
-    // Add a file or a directory to the tracking list.
+    /// Add a file or a directory to the tracking list.
     Track {
         /// Path to the file or directory to track
         path: PathBuf,
     },
-    // Remove a file or a directory from the tracking list.
+    /// Remove a file or a directory from the tracking list.
     Untrack {
         /// Path to the file or directory to untrack
         path: PathBuf,
     },
-    // List all tracked files and directories.
+    /// List all tracked files and directories.
     List,
 }

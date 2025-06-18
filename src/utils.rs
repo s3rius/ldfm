@@ -76,7 +76,7 @@ pub fn git_commit(repo: &str, message: &str) -> anyhow::Result<()> {
     }
     let commit_code = run_command("git", ["-C", repo, "commit", "-m", message])?;
     if !commit_code.success() {
-        anyhow::bail!("Failed to commit changes: {:?}", commit_code);
+        anyhow::bail!("Failed to commit changes");
     }
     Ok(())
 }

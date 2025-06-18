@@ -12,7 +12,6 @@ pub fn run(
     let config = LdfmConfig {
         local_path: std::path::absolute(&local_path)?,
     };
-    let mut config_file = std::fs::File::create(&config_path)?;
     if let Some(repo_uri) = git_repo {
         tracing::info!("Cloning repository from {}", repo_uri);
         git_clone(&repo_uri, &local_path.to_string_lossy())?;
@@ -25,6 +24,7 @@ pub fn run(
     };
     tracing::info!("Writing configuration to {}", config_path.display());
     let config_str = toml::to_string_pretty(&config)?;
+    let mut config_file = std::fs::File::create(&config_path)?;
     config_file.write_all(config_str.as_bytes())?;
 
     let repo_config = local_path.join("ldfm.toml");

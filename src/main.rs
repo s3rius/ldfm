@@ -55,12 +55,17 @@ fn main() -> anyhow::Result<()> {
             };
             cmds::track::remove(config, path)?;
         }
-
         cli::Command::List => {
             let Some(config) = config else {
                 anyhow::bail!(initialization_error_message)
             };
             cmds::track::list(config)?;
+        }
+        cli::Command::Apply => {
+            let Some(config) = config else {
+                anyhow::bail!(initialization_error_message)
+            };
+            cmds::apply::run(config)?;
         }
     }
 
