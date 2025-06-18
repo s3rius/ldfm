@@ -21,3 +21,10 @@ simple-expand-tilde = "0.5.1"
 toml = "0.8.23"
 tracing = { version = "0.1.41", features = ["log"] }
 tracing-subscriber = "0.3.19"
+
+[profile.release]
+lto = true
+opt-level = 3
+codegen-units = 1
+strip = true
+panic = "unwind"
