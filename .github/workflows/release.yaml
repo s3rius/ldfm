@@ -6,7 +6,7 @@ on:
 
 jobs:
   release-bins:
-    name: release ${{ matrix.target }}
+    name: release ${{ matrix.platform.target }}
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -47,6 +47,7 @@ jobs:
         uses: houseabsolute/actions-rust-release@v0
         with:
           executable-name: ldfm
+          changes-file: ""
           target: ${{ matrix.platform.target }}
 
   release-crates:
