@@ -1,6 +1,6 @@
 use crate::{
     configs::{LdfmConfig, RepoConfig},
-    utils::{git_clone, git_commit},
+    utils::{git_clone, git_commit, git_lfs_pull},
 };
 use std::{io::Write, path::PathBuf};
 
@@ -16,6 +16,7 @@ pub fn run(
     if let Some(repo_uri) = git_repo {
         tracing::info!("Cloning repository from {}", repo_uri);
         git_clone(&repo_uri, &local_path.to_string_lossy())?;
+        git_lfs_pull(&local_path.to_string_lossy())?;
     } else {
         tracing::info!(
             "Assuming local path {} is a git repository",

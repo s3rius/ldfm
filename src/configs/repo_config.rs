@@ -1,31 +1,31 @@
-use std::{
-    collections::HashMap,
-    path::{Path, PathBuf},
-};
+use std::{collections::HashMap, path::PathBuf};
 
 use serde::{Deserialize, Serialize};
 
+pub fn default_root_loc() -> PathBuf {
+    PathBuf::from("dotfiles")
+}
+
 #[derive(Debug, Default, Clone, Serialize, Deserialize)]
 pub struct RepoConfig {
-    pub root: Option<PathBuf>,
+    #[serde(default = "default_root_loc")]
+    pub root: PathBuf,
     pub files: HashMap<String, String>,
 }
 
 impl RepoConfig {
     fn format_full_path(&self, path: &PathBuf) -> anyhow::Result<PathBuf> {
+        let mut file_path = std::path::absolute(path)?;
+        file_path = file_path.canonicalize().unwrap_or(file_path);
         let home_dir = std::env::home_dir().ok_or(anyhow::anyhow!("Cannot get home directory"))?;
-        let relative_to_home = pathdiff::diff_paths(std::path::absolute(path)?, home_dir).ok_or(
-            anyhow::anyhow!("Cannot calculate path relative to home directory."),
-        )?;
+        let relative_to_home = pathdiff::diff_paths(file_path, home_dir).ok_or(anyhow::anyhow!(
+            "Cannot calculate path relative to home directory."
+        ))?;
         Ok(PathBuf::from("~").join(relative_to_home))
     }
 
-    pub fn get_local_path<P: AsRef<Path>>(&self, path: P) -> PathBuf {
-        if let Some(root) = &self.root {
-            root.join(path)
-        } else {
-            path.as_ref().to_path_buf()
-        }
+    pub fn get_local_path(&self, key: &str) -> PathBuf {
+        self.root.join(key)
     }
 
     pub fn track_file(&mut self, target: &PathBuf) -> anyhow::Result<()> {

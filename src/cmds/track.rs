@@ -31,7 +31,7 @@ pub fn remove(config: LdfmConfig, path: PathBuf) -> anyhow::Result<()> {
     if let Some(removed_file) = repo_config.untrack_file(&target_path)? {
         let full_file_path = config
             .local_path
-            .join(repo_config.get_local_path(removed_file));
+            .join(repo_config.get_local_path(&removed_file));
         if full_file_path.exists() {
             tracing::info!(
                 "Removing file from local path: {}",
