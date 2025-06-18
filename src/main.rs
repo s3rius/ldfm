@@ -69,7 +69,12 @@ fn main() -> anyhow::Result<()> {
         }
         cli::Command::Completions { shell } => {
             let mut cmd = Cli::command();
-            clap_complete::generate(shell, &mut cmd, "ldfm", &mut std::io::stdout());
+            clap_complete::generate(
+                shell,
+                &mut cmd,
+                env!("CARGO_BIN_NAME"),
+                &mut std::io::stdout(),
+            );
         }
     }
 
