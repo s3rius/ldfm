@@ -36,20 +36,17 @@ jobs:
         run: sudo apt-get update -y && sudo apt-get install -y build-essential
       - name: Bumping version
         run: cargo bump "${{ github.ref_name }}"
-      - name: Build binary
-        uses: houseabsolute/actions-rust-cross@v1
+      - uses: taiki-e/upload-rust-binary-action@v1
         with:
-          command: build
-          target: ${{ matrix.platform.target }}
-          args: "--release"
-          strip: true
-      - name: Publish artifacts and release
-        uses: houseabsolute/actions-rust-release@v0
-        with:
-          executable-name: ldfm
-          changes-file: ""
-          release-tag-prefix: "${{ github.ref_name }}"
-          target: ${{ matrix.platform.target }}
+          # (required) Comma-separated list of binary names (non-extension portion of filename) to build and upload.
+          # Note that glob pattern is not supported yet.
+          bin: ldfm
+          target: ${{matrix.platform.target}}
+          tar: unix
+          include: LICENSE,README.md
+          # (required) GitHub token for uploading assets to GitHub Releases.
+          token: ${{ secrets.GITHUB_TOKEN }}
+
 
   release-crates:
     runs-on: ubuntu-latest
