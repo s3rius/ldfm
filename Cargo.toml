@@ -2,7 +2,7 @@
 name = "ldfm"
 description = "Linux Dotfiles Manager - a tool for managing dotfiles in Linux"
 version = "0.0.1"
-edition = "2024"
+edition = "2021"
 publish = true
 license-file = "LICENSE"
 authors = ["Pavel Kirilin <s3riussan@gmailcom>"]
