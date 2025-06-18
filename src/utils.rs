@@ -64,7 +64,7 @@ pub fn git_lfs_pull(repo: &str) -> anyhow::Result<()> {
     tracing::info!("Pulling LFS files for repository: {}", repo);
     let pull_code = run_command("git", ["-C", repo, "lfs", "pull"])?;
     if !pull_code.success() {
-        anyhow::bail!("Failed to pull LFS files: {:?}", pull_code);
+        tracing::warn!("Failed to pull LFS files");
     }
     Ok(())
 }
@@ -74,9 +74,6 @@ pub fn git_commit(repo: &str, message: &str) -> anyhow::Result<()> {
     if !add_code.success() {
         anyhow::bail!("Failed to add changes to git index: {:?}", add_code);
     }
-    let commit_code = run_command("git", ["-C", repo, "commit", "-m", message])?;
-    if !commit_code.success() {
-        anyhow::bail!("Failed to commit changes");
-    }
+    run_command("git", ["-C", repo, "commit", "-m", message])?;
     Ok(())
 }
