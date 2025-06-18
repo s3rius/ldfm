@@ -62,4 +62,4 @@ jobs:
       - name: Bumping version
         run: cargo bump "${{ github.ref_name }}"
       - name: Publish crate
-        run: cargo publish --token "${{ secrets.CARGO_TOKEN }}"
+        run: cargo publish --token "${{ secrets.CARGO_TOKEN }}" --allow-dirty
