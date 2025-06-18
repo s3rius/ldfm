@@ -8,6 +8,9 @@ udpate then and pull them from a remote repository.
 
 ```bash
 cargo install --locked ldfm
+
+# Or if you want to speedup the installation process, you can use the prebuilt binary
+cargo binstall --locked ldfm
 ```
 
 # Usage
