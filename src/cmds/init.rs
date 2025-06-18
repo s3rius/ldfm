@@ -1,5 +1,5 @@
 use crate::{
-    config::LdfmConfig,
+    configs::{LdfmConfig, RepoConfig},
     utils::{git_clone, git_commit},
 };
 use std::{io::Write, path::PathBuf};
@@ -32,7 +32,7 @@ pub fn run(
             "Creating repository configuration at {}",
             repo_config.display()
         );
-        let repo_config_content = toml::to_string_pretty(&crate::config::RepoConfig::default())?;
+        let repo_config_content = toml::to_string_pretty(&RepoConfig::default())?;
         let mut repo_config_file = std::fs::File::create(&repo_config)?;
         repo_config_file.write_all(repo_config_content.as_bytes())?;
         git_commit(&local_path.to_string_lossy(), "Initialized ldfm")?;

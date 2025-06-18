@@ -25,9 +25,15 @@ pub enum Command {
         push: bool,
     },
     // Add a file or a directory to the tracking list.
-    Track {},
+    Track {
+        /// Path to the file or directory to track
+        path: PathBuf,
+    },
     // Remove a file or a directory from the tracking list.
-    Untrack {},
+    Untrack {
+        /// Path to the file or directory to untrack
+        path: PathBuf,
+    },
     // List all tracked files and directories.
-    List {},
+    List,
 }
