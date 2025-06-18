@@ -7,7 +7,7 @@ on:
 jobs:
   release-bins:
     name: release ${{ matrix.platform.target }}
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.platform.runs-on }}
     strategy:
       matrix:
         platform:
