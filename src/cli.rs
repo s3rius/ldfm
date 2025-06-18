@@ -19,7 +19,11 @@ pub enum Command {
         git_repo: Option<String>,
     },
     /// Apply the current state of dotfiles to the local system.
-    Apply,
+    Apply {
+        /// Disable pulling the latest changes from the remote repository before applying
+        #[arg(long, short, default_value = "false")]
+        no_pull: bool,
+    },
     /// Commit current state of dotfiles.
     Commit {
         /// Whether to push the changes to the remote repository
