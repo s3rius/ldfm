@@ -61,11 +61,11 @@ fn main() -> anyhow::Result<()> {
             };
             cmds::track::list(config)?;
         }
-        cli::Command::Apply => {
+        cli::Command::Apply { no_pull } => {
             let Some(config) = config else {
                 anyhow::bail!(initialization_error_message)
             };
-            cmds::apply::run(config)?;
+            cmds::apply::run(config, no_pull)?;
         }
     }
 

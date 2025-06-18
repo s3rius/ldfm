@@ -1,8 +1,12 @@
 use fs_extra::dir::CopyOptions;
 
-use crate::configs::LdfmConfig;
+use crate::{configs::LdfmConfig, utils::git_pull};
 
-pub fn run(config: LdfmConfig) -> anyhow::Result<()> {
+pub fn run(config: LdfmConfig, no_pull: bool) -> anyhow::Result<()> {
+    if !no_pull {
+        tracing::info!("Pulling latest changes from remote repository...");
+        git_pull(&config.local_path.display().to_string())?;
+    }
     let repo_config = config.get_repo_config()?;
     for (key, value) in repo_config.files.iter() {
         let Some(to_path) = simple_expand_tilde::expand_tilde(value) else {

@@ -41,6 +41,14 @@ pub fn git_push(repo: &str) -> anyhow::Result<()> {
     Ok(())
 }
 
+pub fn git_pull(repo: &str) -> anyhow::Result<()> {
+    let push_code = run_command("git", ["-C", repo, "pull"])?;
+    if !push_code.success() {
+        tracing::warn!("Failed to pull changes from the remote repository");
+    }
+    Ok(())
+}
+
 pub fn git_lfs_pull(repo: &str) -> anyhow::Result<()> {
     // Ensure git-lfs is installed and initialized
     let attrs = PathBuf::from(repo).join(".gitattributes");
