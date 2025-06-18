@@ -8,6 +8,8 @@ jobs:
   release-bins:
     name: release ${{ matrix.platform.target }}
     runs-on: ${{ matrix.platform.runs-on }}
+    permissions:
+      contents: write
     strategy:
       matrix:
         platform:
