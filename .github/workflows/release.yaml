@@ -48,6 +48,7 @@ jobs:
         with:
           executable-name: ldfm
           changes-file: ""
+          release-tag-prefix: "${{ github.ref_name }}"
           target: ${{ matrix.platform.target }}
 
   release-crates:
