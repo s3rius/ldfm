@@ -69,6 +69,38 @@ pub fn list(config: LdfmConfig) -> anyhow::Result<()> {
 
 pub fn sync(config: LdfmConfig, push: bool) -> anyhow::Result<()> {
     let repo_config = config.get_repo_config()?;
+    let mut dotfiles_path = config.local_path.clone();
+    if let Some(df_root) = &repo_config.root {
+        dotfiles_path = dotfiles_path.join(df_root);
+    }
+    std::fs::create_dir_all(&dotfiles_path)?;
+    let df_contents = fs_extra::dir::get_dir_content(&dotfiles_path)?;
+    // Clean up the dotfiles directory by removing files and directories
+    let git_dir = config.local_path.join(".git").display().to_string();
+    let ldfm_conig = config.local_path.join("ldfm.toml").display().to_string();
+    df_contents
+        .files
+        .iter()
+        .filter(|filepath| {
+            // We filter out files that are in the .git directory or the ldfm.toml config file
+            !(filepath.starts_with(git_dir.as_str()) || filepath.starts_with(ldfm_conig.as_str()))
+        })
+        .for_each(|file| {
+            tracing::debug!("Removing file: {}", file);
+            fs_extra::remove_items(&[file]).ok();
+        });
+    df_contents
+        .directories
+        .iter()
+        .filter(|dir| {
+            // We filter out files that are in the .git directory or the dotfiles directory iteslf. 
+            !(dir.starts_with(git_dir.as_str()) || dir == &&config.local_path.display().to_string())
+        })
+        .for_each(|dir| {
+            tracing::info!("Removing directory: {}", dir);
+            fs_extra::remove_items(&[dir]).ok();
+        });
+    std::fs::create_dir_all(dotfiles_path)?;
     for (key, value) in &repo_config.files {
         let target_path = config.local_path.join(repo_config.get_local_path(key));
         let actual_path = simple_expand_tilde::expand_tilde(&value)

@@ -2,14 +2,9 @@ use std::{collections::HashMap, path::PathBuf};
 
 use serde::{Deserialize, Serialize};
 
-pub fn default_root_loc() -> PathBuf {
-    PathBuf::from("dotfiles")
-}
-
 #[derive(Debug, Default, Clone, Serialize, Deserialize)]
 pub struct RepoConfig {
-    #[serde(default = "default_root_loc")]
-    pub root: PathBuf,
+    pub root: Option<PathBuf>,
     pub files: HashMap<String, String>,
 }
 
@@ -25,7 +20,11 @@ impl RepoConfig {
     }
 
     pub fn get_local_path(&self, key: &str) -> PathBuf {
-        self.root.join(key)
+        if let Some(root) = &self.root {
+            root.join(key)
+        } else {
+            PathBuf::from(key)
+        }
     }
 
     pub fn track_file(&mut self, target: &PathBuf) -> anyhow::Result<()> {
