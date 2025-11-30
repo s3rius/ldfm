@@ -72,8 +72,25 @@ pub fn sync(config: LdfmConfig, push: bool) -> anyhow::Result<()> {
     let mut dotfiles_path = config.local_path.clone();
     if let Some(df_root) = &repo_config.root {
         dotfiles_path = dotfiles_path.join(df_root);
+        std::fs::remove_dir_all(&dotfiles_path)?;
+        std::fs::create_dir_all(&dotfiles_path)?;
+    } else {
+        dotfiles_path = config.local_path.clone();
+        for entry in std::fs::read_dir(&dotfiles_path)? {
+            let entry = entry?.path();
+            let Some(file_name) = entry.file_name() else {
+                continue;
+            };
+            if [".git", "ldfm.toml"].contains(&file_name.to_string_lossy().as_ref()) {
+                continue;
+            }
+            if entry.is_dir() {
+                std::fs::remove_dir_all(entry)?;
+            } else {
+                std::fs::remove_file(entry)?;
+            }
+        }
     }
-    std::fs::create_dir_all(&dotfiles_path)?;
     let df_contents = fs_extra::dir::get_dir_content(&dotfiles_path)?;
     // Clean up the dotfiles directory by removing files and directories
     let git_dir = config.local_path.join(".git").display().to_string();
@@ -93,7 +110,7 @@ pub fn sync(config: LdfmConfig, push: bool) -> anyhow::Result<()> {
         .directories
         .iter()
         .filter(|dir| {
-            // We filter out files that are in the .git directory or the dotfiles directory iteslf. 
+            // We filter out files that are in the .git directory or the dotfiles directory iteslf.
             !(dir.starts_with(git_dir.as_str()) || dir == &&config.local_path.display().to_string())
         })
         .for_each(|dir| {
